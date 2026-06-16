@@ -29,6 +29,7 @@ public class DownLoadTextureUniTask : MonoBehaviour
             var uri = "file:///C:/UnityProjects/UniR3UniTaskPractice/Assets/Arts/Textures/証明写真.png";
             // UniRxを使いたいので、UniTaskからObservableへ変換する。
             var observable = Observable
+                // DeferはこのObservableがSubscribeされるまで中のブロックを実行しない
                 .Defer(() =>
                 {
                     return GetTextureAsync(uri, token)
@@ -36,6 +37,7 @@ public class DownLoadTextureUniTask : MonoBehaviour
                 })
                 .Retry(3);
 
+            // awaitで暗黙的にSubscribeを読んでいるUniRxが用意しているGetAwaiter()拡張が動いている
             var texture = await observable;
 
             _rawImage.texture = texture;
