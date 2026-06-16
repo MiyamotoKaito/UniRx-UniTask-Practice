@@ -12,7 +12,10 @@ public class DownLoadTextureUniTask : MonoBehaviour
 
     private void Start()
     {
-        
+        // このMonoBehaviourに紐づいたCancellationTokenを取得
+        var token = this.GetCancellationTokenOnDestroy();
+
+        SetupTextureAsync(token).Forget();
     }
     /// <summary>
     /// UniTaskを使ってTextureをロードする
@@ -37,6 +40,7 @@ public class DownLoadTextureUniTask : MonoBehaviour
 
             _rawImage.texture = texture;
         }
+        // when は条件式がtrueだったらCatchブロックが実行されるらしい。だからif文と考えてよろしC#6.0から導入された
         catch (Exception e) when (!(e is OperationCanceledException))
         {
             Debug.LogError(e);
