@@ -1,16 +1,23 @@
+﻿using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DownLoadTextureUniTask : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private RawImage _rawImage;
+
+    private void Start()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    private async UniTaskVoid SetupTextureAsync(CancellationToken token)
     {
-        
+
+    }
+    private async UniTask<Texture> GetTextureAsync(string uri, CancellationToken token)
+    {
+
     }
 }
