@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,10 +13,33 @@ public class DownLoadTextureUniTask : MonoBehaviour
     {
         
     }
-
+    /// <summary>
+    /// UniTaskを使ってTextureをロードする
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private async UniTaskVoid SetupTextureAsync(CancellationToken token)
     {
+        try
+        {
+            var uri = "file:///C:/UnityProjects/UniR3UniTaskPractice/Assets/Arts/Textures/証明写真.png";
+            // UniRxを使いたいので、UniTaskからObservableへ変換する。
+            var observable = Observable
+                .Defer(() =>
+                {
+                    return GetTextureAsync(uri, token)
+                    .ToObservable();
+                })
+                .Retry(3);
 
+            var texture = await observable;
+
+            _rawImage.texture = texture;
+        }
+        catch (Exception e) when (!(e is OperationCanceledException))
+        {
+            Debug.LogError(e);
+        }
     }
     private async UniTask<Texture> GetTextureAsync(string uri, CancellationToken token)
     {
