@@ -3,6 +3,7 @@ using System;
 using System.Threading;
 using UniRx;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class DownLoadTextureUniTask : MonoBehaviour
@@ -41,8 +42,18 @@ public class DownLoadTextureUniTask : MonoBehaviour
             Debug.LogError(e);
         }
     }
+    /// <summary>
+    /// 戻り値TextureのUniTaskを使用して画像をURI経由でロードするメソッド
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     private async UniTask<Texture> GetTextureAsync(string uri, CancellationToken token)
     {
-
+        using (var uwr = UnityWebRequestTexture.GetTexture(uri))
+        {
+            await uwr.SendWebRequest().WithCancellation(token);
+            return ((DownloadHandlerTexture)uwr.downloadHandler).texture;
+        }
     }
 }
